@@ -77,7 +77,8 @@
 	},
 	"Hooks": {
 		"LoadExtensionSchemaUpdates": "main",
-		"SpecialSearchNogomatch": "main"
+		"SpecialSearchNogomatch": "main",
+		"wgQueryPages": "main"
 	},
 	"AvailableRights": [
 		"searchdigest-reader",

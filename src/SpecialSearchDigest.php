@@ -418,6 +418,9 @@ EOD
 	public function getQueryInfo() {
 		global $wgSearchDigestMinimumMisses;
 		$db = $this->getRecacheDB();
+		if ( !isset( $this->startTimestamp ) ) {
+			$this->setStartTimestamp();
+		}
 
 		$conds = [];
 		$joinConds = [];
@@ -427,7 +430,11 @@ EOD
 			$fields = [ 'sd_blocks_query', 'sd_blocks_added', 'sd_blocks_actor' ];
 		} else {
 			$tables = [ 'searchdigest', 'searchdigest_blocks', 'page' ];
-			$fields = [ 'sd_query', 'sd_misses', 'sd_touched' ];
+			$fields = [
+				'namespace' => 0,
+				'title' => 'sd_query',
+				'value' => 'sd_misses',
+			];
 			$conds = [
 				'sd_touched > ' . $db->addQuotes( date( 'Y-m-d', $this->startTimestamp ) ),
 				'sd_misses >= ' . $wgSearchDigestMinimumMisses
@@ -499,14 +506,14 @@ EOD
 
 			return $this->msg( 'searchdigest-entry', $blocksRecord->getQuery(), $this->msg( 'searchdigest-block-actor', $userLink, $added )->plain(), $unblockText )->plain();
 		} else {
-			$title = Title::newFromText( $result->sd_query );
+			$title = Title::newFromText( $result->title );
 
 			if ( $title === null || $title->isKnown() ) {
 				// If the title is null or is a valid page, don't show this row.
 				return false;
 			}
 
-			if ( in_array( $result->sd_query, $this->blockedQueries ) ) {
+			if ( in_array( $result->title, $this->blockedQueries ) ) {
 				return false;
 			}
 
@@ -519,12 +526,12 @@ EOD
 						$this->msg( 'searchdigest-block-buttontext' )->escaped(),
 						'',
 						[],
-						[ 'query' => $result->sd_query ]
+						[ 'query' => $result->title ]
 					);
 			}
 
-			return $this->msg( 'searchdigest-entry', $link, $result->sd_misses, '<a role="button" class="sd-cr-btn" data-page="' .
-				htmlspecialchars( $result->sd_query, ENT_QUOTES ) . '">'
+			return $this->msg( 'searchdigest-entry', $link, $result->value, '<a role="button" class="sd-cr-btn" data-page="' .
+				htmlspecialchars( $result->title, ENT_QUOTES ) . '">'
 				. $this->msg( 'searchdigest-redirect-buttontext' )->escaped() . '</a>' . $blockText )->plain();
 		}
 	}
