@@ -259,6 +259,7 @@ EOD
 			->where( $conds )
 			->groupBy( '1,2' )
 			->orderBy( [ 1, 2 ] )
+			->caller( __METHOD__ )
 			->fetchResultSet();
 
 		// Add them to a nice multi-dimensional array
