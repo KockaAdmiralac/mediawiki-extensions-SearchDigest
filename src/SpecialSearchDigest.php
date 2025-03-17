@@ -419,6 +419,9 @@ EOD
 	public function getQueryInfo() {
 		global $wgSearchDigestMinimumMisses;
 		$db = $this->getRecacheDB();
+		if ( !isset( $this->startTimestamp ) ) {
+			$this->setStartTimestamp();
+		}
 
 		$conds = [];
 		$joinConds = [];
@@ -428,7 +431,11 @@ EOD
 			$fields = [ 'sd_blocks_query', 'sd_blocks_added', 'sd_blocks_actor' ];
 		} else {
 			$tables = [ 'searchdigest', 'searchdigest_blocks', 'page' ];
-			$fields = [ 'sd_query', 'sd_misses', 'sd_touched' ];
+			$fields = [
+				'namespace' => 0,
+				'title' => 'sd_query',
+				'value' => 'sd_misses',
+			];
 			$conds = [
 				'sd_touched > ' . $db->addQuotes( date( 'Y-m-d', $this->startTimestamp ) ),
 				'sd_misses >= ' . $wgSearchDigestMinimumMisses
@@ -504,14 +511,14 @@ EOD
 				$unblockText
 			)->parse();
 		} else {
-			$title = Title::newFromText( $result->sd_query );
+			$title = Title::newFromText( $result->title );
 
 			if ( $title === null || $title->isKnown() ) {
 				// If the title is null or is a valid page, don't show this row.
 				return false;
 			}
 
-			if ( in_array( $result->sd_query, $this->blockedQueries ) ) {
+			if ( in_array( $result->title, $this->blockedQueries ) ) {
 				return false;
 			}
 
@@ -524,18 +531,18 @@ EOD
 						$this->msg( 'searchdigest-block-buttontext' )->parse(),
 						'',
 						[],
-						[ 'query' => $result->sd_query ]
+						[ 'query' => $result->title ]
 					);
 			}
 
 			$button = Html::rawElement( 'a', [
 				'role' => 'button',
 				'class' => 'sd-cr-btn',
-				'data-page' => htmlspecialchars( $result->sd_query, ENT_QUOTES )
+				'data-page' => htmlspecialchars( $result->title, ENT_QUOTES )
 			], $this->msg( 'searchdigest-redirect-buttontext' )->parse() );
 
 			return $this->msg( 'searchdigest-entry' )->rawParams(
-				$link, $result->sd_misses, $button . $blockText
+				$link, $result->value, $button . $blockText
 			)->parse();
 		}
 	}

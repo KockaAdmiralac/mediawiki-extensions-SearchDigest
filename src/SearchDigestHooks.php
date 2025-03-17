@@ -6,6 +6,7 @@ use DatabaseUpdater;
 use MediaWiki\Hook\SpecialSearchNogomatchHook;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\ResourceLoader\Context;
+use MediaWiki\SpecialPage\Hook\WgQueryPagesHook;
 
 /**
  * Hooks for the SearchDigest extension
@@ -13,7 +14,7 @@ use MediaWiki\ResourceLoader\Context;
  * @file
  * @ingroup Extensions
  */
-class SearchDigestHooks implements SpecialSearchNogomatchHook {
+class SearchDigestHooks implements SpecialSearchNogomatchHook, WgQueryPagesHook {
 	/**
 	 * Called when MediaWiki's update script is ran
 	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/LoadExtensionSchemaUpdates
@@ -49,5 +50,12 @@ class SearchDigestHooks implements SpecialSearchNogomatchHook {
 			'redirect' => $factory->get( 'redirect' )->getSynonym( 0 ),
 			'editsummary' => $context->msg( 'searchdigest-redirect-editsummary' )->inContentLanguage()->plain(),
 		];
+	}
+
+	/**
+	 * Make the page available as a querypage through the MediaWiki API.
+	 */
+	public function onWgQueryPages( &$queryPages ): void {
+		$queryPages[] = [ SpecialSearchDigest::class, 'SearchDigest' ];
 	}
 }
