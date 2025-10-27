@@ -153,7 +153,8 @@ SDRedirectDialog.prototype.getActionProcess = function ( action ) {
 
               // Create the page that we're redirecting
               return api.create(self.pageToCreate, {
-                  summary: mw.format(SDdata.editsummary, value)
+                  summary: mw.format(SDdata.editsummary, value),
+                  tags: ['searchdigest'],
               }, SDdata.redirect + " [[" + value + "]]").done( function(data) {
                   mw.notify( mw.message('searchdigest-redirect-successtext', self.pageToCreate).text(), { tag: 'sd-created' } );
                   self.close( { page: self.pageToCreate } );

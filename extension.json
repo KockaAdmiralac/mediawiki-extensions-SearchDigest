@@ -76,6 +76,9 @@
 		}
 	},
 	"Hooks": {
+		"ChangeTagsAllowedAdd": "main",
+		"ChangeTagsListActive": "main",
+		"ListDefinedTags": "main",
 		"LoadExtensionSchemaUpdates": "main",
 		"SpecialSearchNogomatch": "main",
 		"wgQueryPages": "main"

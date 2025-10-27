@@ -58,5 +58,8 @@
 	"searchdigest-unblock-complete": "The query '''$1''' has been removed from the block list.",
 	"searchdigest-error-notblocked": "This query is not blocked.",
 	"searchdigest-error-blockalreadyblocked": "This query is already blocked.",
-	"searchdigest-error-blockinvalidquery": "No search query given to block"
+	"searchdigest-error-blockinvalidquery": "No search query given to block",
+	"tag-searchdigest": "created from SearchDigest",
+	"tag-searchdigest-description": "Redirect creations performed from [[Special:SearchDigest]]",
+	"tag-searchdigest-helppage": "Special:SearchDigest"
 }

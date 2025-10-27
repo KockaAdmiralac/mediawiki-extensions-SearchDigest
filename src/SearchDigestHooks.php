@@ -58,4 +58,32 @@ class SearchDigestHooks implements SpecialSearchNogomatchHook, WgQueryPagesHook 
 	public function onWgQueryPages( &$queryPages ): void {
 		$queryPages[] = [ SpecialSearchDigest::class, 'SearchDigest' ];
 	}
+
+	/**
+	 * Marks the 'searchdigest' tag as allowed for manual adding (through
+	 * JavaScript).
+	 * @param array &$tags
+	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/ChangeTagsAllowedAdd
+	 */
+	public function onChangeTagsAllowedAdd( array &$allowedTags ) {
+		$this->onListDefinedTags( $allowedTags );
+	}
+
+	/**
+	 * Marks the 'searchdigest' tag as active.
+	 * @param array &$tags
+	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/ChangeTagsListActive
+	 */
+	public function onChangeTagsListActive( &$tags ) {
+		$this->onListDefinedTags( $tags );
+	}
+
+	/**
+	 * Defines the 'searchdigest' tag.
+	 * @param array &$tags Available change tags.
+	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/ListDefinedTags
+	 */
+	public function onListDefinedTags( &$tags ) {
+		$tags[] = 'searchdigest';
+	}
 }
